@@ -12,8 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Collections.init(
-    {},
     {
+      LiteratureId: DataTypes.INTEGER,
+      UserId: DataTypes.INTEGER
+    }, {
       sequelize,
       modelName: "Collections",
     }
