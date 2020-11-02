@@ -14,7 +14,7 @@ module.exports = {
       publication: {
         type: Sequelize.DATE,
       },
-      userId: {
+      UserId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",
