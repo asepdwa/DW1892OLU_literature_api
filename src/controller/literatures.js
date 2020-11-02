@@ -13,9 +13,6 @@ const schema = Joi.object({
   UserId: Joi.number(),
 });
 
-const ebookDestination = process.env.MULTER_EBOOK_DESTINATION;
-const thumbDestination = process.env.MULTER_EBOOK_THUMBNAIL_DESTINATION;
-
 exports.get = async (req, res) => {
   try {
     const { q, from, to, status } = req.query;
@@ -100,10 +97,9 @@ exports.add = async (req, res) => {
   }
 
   try {
-    const fullUrl = req.protocol + "://" + req.get("host");
-    const fileUrl =
-      fullUrl + `${ebookDestination}/` + req.files["file"][0].filename;
-    const thumbnailUrl = fullUrl + `${thumbDestination}/default.png`;
+    const fileUrl = req.files["file"][0].path;
+    const thumbnailUrl =
+      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
     const data = await Literatures.create({
       ...payload,
