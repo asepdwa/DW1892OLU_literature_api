@@ -24,9 +24,13 @@ exports.get = async (req, res) => {
     const literatureQuery = {
       where: {
         [Op.and]: [
-          sequelize.where(sequelize.fn("YEAR", sequelize.col("publication")), {
-            [Op.between]: [from || "0", to || "2020"],
-          }),
+          // sequelize.where(sequelize.fn("YEAR", sequelize.col("publication")), {
+          sequelize.where(
+            Sequelize.literal("to_char(\"publication\", 'YYYY')"),
+            {
+              [Op.between]: [from || "0", to || "2020"],
+            }
+          ),
           {
             title: {
               [Op.like]: "%" + (q || "") + "%",
