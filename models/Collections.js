@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Collections.init(
     {
-      literatureId: DataTypes.INTEGER,
-      userId: DataTypes.INTEGER
+      LiteratureId: DataTypes.INTEGER,
+      UserId: DataTypes.INTEGER
     }, {
       sequelize,
       modelName: "Collections",
