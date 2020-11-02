@@ -20,6 +20,8 @@ module.exports = {
             "Jl. Elang IV, Sawah Lama, Kec. Ciputat, Kota Tangerang Selatan, Banten 15413",
           photoUrl: "https://dumbways.id/assets/images/brandwhite.png",
           role: "Admin",
+          createdAt: null,
+          updatedAt: NULL,
         },
         {
           email: "andreahirata@gmail.com",
@@ -31,6 +33,8 @@ module.exports = {
           photoUrl:
             "https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1553850277/zxw7yum1w0wx0ynkhg5r.jpg",
           role: "Guest",
+          createdAt: null,
+          updatedAt: NULL,
         },
         {
           email: "jkrowling@gmail.com",
@@ -42,6 +46,8 @@ module.exports = {
           photoUrl:
             "https://pbs.twimg.com/profile_images/1265044655890149376/WpCp6n9e.jpg",
           role: "Guest",
+          createdAt: null,
+          updatedAt: NULL,
         },
       ]);
 
@@ -52,6 +58,6 @@ module.exports = {
     }
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("People", null, {});
+    await queryInterface.bulkDelete("Users", null, {});
   },
 };

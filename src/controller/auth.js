@@ -33,7 +33,7 @@ exports.AuthCheck = async (req, res) => {
           },
         },
         attributes: {
-          exclude: ["createdAt", "updatedAt", "CatId", "UserId"],
+          exclude: ["createdAt", "updatedAt", "UserId"],
         },
       },
       attributes: {
@@ -180,7 +180,6 @@ exports.signup = async (req, res) => {
       address,
       photoUrl,
       role,
-      bookmark: [],
     });
 
     if (data) {
