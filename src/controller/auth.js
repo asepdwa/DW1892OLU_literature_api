@@ -33,7 +33,7 @@ exports.AuthCheck = async (req, res) => {
           },
         },
         attributes: {
-          exclude: ["createdAt", "updatedAt", "UserId"],
+          exclude: ["createdAt", "updatedAt"],
         },
       },
       attributes: {

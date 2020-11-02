@@ -10,7 +10,7 @@ const schema = Joi.object({
   isbn: Joi.string().required(),
   author: Joi.string().required(),
   status: Joi.string(),
-  userId: Joi.number(),
+  UserId: Joi.number(),
 });
 
 const ebookDestination = process.env.MULTER_EBOOK_DESTINATION;
@@ -49,7 +49,7 @@ exports.get = async (req, res) => {
         },
       },
       attributes: {
-        exclude: ["createdAt", "updatedAt", "UserId"],
+        exclude: ["createdAt", "updatedAt"],
       },
     };
 
@@ -67,7 +67,7 @@ exports.get = async (req, res) => {
             },
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "UserId"],
+            exclude: ["createdAt", "updatedAt"],
           },
         });
 

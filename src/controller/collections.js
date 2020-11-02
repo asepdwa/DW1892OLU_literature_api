@@ -21,19 +21,19 @@ exports.add = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const { userId, literatureId } = req.query;
+    const { UserId, LiteratureId } = req.query;
     const removed = await Collections.destroy({
       where: {
-        userId,
-        literatureId,
+        UserId,
+        LiteratureId,
       },
     });
 
     if (removed) {
       res.send({
         message: "This literature has been removed from your collection",
-        userId,
-        literatureId,
+        UserId,
+        LiteratureId,
       });
     }
   } catch (err) {
