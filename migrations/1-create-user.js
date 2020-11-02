@@ -39,8 +39,12 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
-    });
+      },
+      {
+        timestamps: true,
+        underscored: true,
+        freezeTableName: true,
+      });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Users');
