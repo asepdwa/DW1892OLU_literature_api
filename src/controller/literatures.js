@@ -26,7 +26,7 @@ exports.get = async (req, res) => {
         [Op.and]: [
           // sequelize.where(sequelize.fn("YEAR", sequelize.col("publication")), {
           sequelize.where(
-            Sequelize.literal("to_char(\"publication\", 'YYYY')"),
+            sequelize.literal("to_char(\"publication\", 'YYYY')"),
             {
               [Op.between]: [from || "0", to || "2020"],
             }
