@@ -8,11 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-<<<<<<< HEAD
-      literatureId: {
-=======
       LiteratureId: {
->>>>>>> c0df5efd1095cbe96d8c9980f853b56251b05781
         type: Sequelize.INTEGER,
         references: {
           model: "Literatures",

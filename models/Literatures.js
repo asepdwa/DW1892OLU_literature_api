@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   Literatures.init(
     {
       title: DataTypes.STRING,
-      publication: DataTypes.STRING,
+      publication: DataTypes.DATE,
       userId: DataTypes.INTEGER,
       pages: DataTypes.INTEGER,
       isbn: DataTypes.STRING,

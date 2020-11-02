@@ -21,7 +21,7 @@ module.exports = {
           photoUrl: "https://dumbways.id/assets/images/brandwhite.png",
           role: "Admin",
           createdAt: null,
-          updatedAt: NULL,
+          updatedAt: null,
         },
         {
           email: "andreahirata@gmail.com",
@@ -34,7 +34,7 @@ module.exports = {
             "https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1553850277/zxw7yum1w0wx0ynkhg5r.jpg",
           role: "Guest",
           createdAt: null,
-          updatedAt: NULL,
+          updatedAt: null,
         },
         {
           email: "jkrowling@gmail.com",
@@ -47,7 +47,7 @@ module.exports = {
             "https://pbs.twimg.com/profile_images/1265044655890149376/WpCp6n9e.jpg",
           role: "Guest",
           createdAt: null,
-          updatedAt: NULL,
+          updatedAt: null,
         },
       ]);
 
