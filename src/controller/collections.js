@@ -24,8 +24,8 @@ exports.delete = async (req, res) => {
     const { userId, literatureId } = req.query;
     const removed = await Collections.destroy({
       where: {
-        UserId,
-        LiteratureId,
+        userId,
+        literatureId,
       },
     });
 

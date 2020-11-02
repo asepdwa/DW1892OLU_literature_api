@@ -1,16 +1,9 @@
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const { cloudinary } = require("../../config/cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 const jwtKey = process.env.JWT_KEY;
-const publicPathDestination = process.env.MULTER_PATH_DESTINATION;
-const ebookDestination =
-  publicPathDestination + process.env.MULTER_EBOOK_DESTINATION;
-const ebookThumbDestination =
-  publicPathDestination + process.env.MULTER_EBOOK_THUMBNAIL_DESTINATION;
-const avatarDestination =
-  publicPathDestination + process.env.MULTER_AVATAR_DESTINATION;
-const defaultDestination =
-  publicPathDestination + process.env.MULTER_DEFAULT_DESTINATION;
 const maxSize = process.env.MULTER_MAX_SIZE;
 
 exports.authentication = {
@@ -42,24 +35,35 @@ exports.authentication = {
   },
 
   files_upload: function (uploadFields) {
-    var storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        if (file.originalname.match(/\.(PDF|pdf)$/)) {
-          cb(null, ebookDestination);
-        } else {
-          if (file.fieldname === "avatar") {
-            cb(null, avatarDestination);
-          } else if (file.fieldname === "thumbnail") {
-            cb(null, ebookThumbDestination);
-          } else {
-            cb(null, defaultDestination);
-          }
-        }
-      },
-      filename: function (req, file, cb) {
-        cb(null, Date.now() + "-" + file.originalname.replace(" ", "-"));
+    const storage = new CloudinaryStorage({
+      cloudinary: cloudinary,
+      params: (req, file) => {
+        return {
+          folder: `literature/${file.fieldname}s`,
+          resource_type: file.fieldname === "file" ? "raw" : "image",
+          public_id: Date.now() + "-" + file.originalname.replace(" ", "-"),
+        };
       },
     });
+
+    // var storage = multer.diskStorage({
+    //   destination: function (req, file, cb) {
+    //     if (file.originalname.match(/\.(PDF|pdf)$/)) {
+    //       cb(null, ebookDestination);
+    //     } else {
+    //       if (file.fieldname === "avatar") {
+    //         cb(null, avatarDestination);
+    //       } else if (file.fieldname === "thumbnail") {
+    //         cb(null, ebookThumbDestination);
+    //       } else {
+    //         cb(null, defaultDestination);
+    //       }
+    //     }
+    //   },
+    //   filename: function (req, file, cb) {
+    //     cb(null, Date.now() + "-" + file.originalname.replace(" ", "-"));
+    //   },
+    // });
 
     const typeFileFilters = function (req, file, cb) {
       if (file.fieldname === "file") {

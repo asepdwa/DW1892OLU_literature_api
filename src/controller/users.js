@@ -1,5 +1,4 @@
 const { Users, Literatures, Collections } = require("../../models");
-const avatarDestination = process.env.MULTER_AVATAR_DESTINATION;
 
 const userQuery = {
   include: {
@@ -108,10 +107,7 @@ exports.delete = async (req, res) => {
 exports.patch_avatar = async (req, res) => {
   try {
     const id = req.params.id;
-
-    const fullUrl = req.protocol + "://" + req.get("host");
-    const photoUrl =
-      fullUrl + `${avatarDestination}/` + req.files["avatar"][0].filename;
+    const photoUrl = req.files["avatar"][0].path;
 
     const patch = await Users.update(
       { photoUrl },

@@ -170,7 +170,7 @@ exports.signup = async (req, res) => {
     );
 
     const photoUrl =
-      req.protocol + "://" + req.get("host") + "/avatar/default.jpg";
+      "https://res.cloudinary.com/literature/image/upload/v1604299425/literature/avatars/default_i8xtzv.png";
     const data = await Users.create({
       email,
       password: hashedPassword,
