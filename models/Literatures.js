@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       Literatures.belongsTo(models.Users, {
         as: "uploader",
         foreignKey: {
-          name: "userId",
+          name: "UserId",
           onDelete: "CASCADE",
         },
       });
