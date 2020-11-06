@@ -98,8 +98,7 @@ exports.add = async (req, res) => {
 
   try {
     const fileUrl = req.files["file"][0].path;
-    const thumbnailUrl =
-      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
+    const thumbnailUrl = req.files["file"][0].path;
 
     const data = await Literatures.create({
       ...payload,
