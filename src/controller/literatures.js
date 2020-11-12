@@ -100,7 +100,7 @@ exports.add = async (req, res) => {
   }
 
   try {
-    const fileName = req.files["file"][0].filename;
+    const fileName = req.files["file"][0].path;
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
@@ -118,9 +118,11 @@ exports.add = async (req, res) => {
 
     blobWriter.on("error", (err) => new Error(err));
     blobWriter.on("finish", async () => {
-      const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
-        bucket.name
-      }/o/${encodeURI(blob.name)}?alt=media`;
+      const fileUrl = encodeURIComponent(
+        `https://firebasestorage.googleapis.com/v0/b/${
+          bucket.name
+        }/o/${encodeURI(blob.name)}?alt=media`
+      );
       try {
         const data = await Literatures.create({
           ...payload,
