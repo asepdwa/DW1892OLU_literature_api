@@ -71,22 +71,23 @@ exports.get = async (req, res) => {
           },
         });
 
-    let downloadUrl;
-    if (id) {
-      const storage = new Storage(storageConfig);
-      downloadUrl = await storage.refFromURL(data[0].fileUrl).getDownloadURL();
-    }
     if (data) {
-      !id
-        ? res.send({
-            message: "Response Successfully",
-            data,
-          })
-        : res.send({
-            message: "Response Successfully",
-            data,
-            downloadUrl,
-          });
+      if (id) {
+        const storage = new Storage(storageConfig);
+        const downloadUrl = storage
+          .refFromURL(data[0].fileUrl)
+          .getDownloadURL();
+        res.send({
+          message: "Response Successfully",
+          data,
+          downloadUrl,
+        });
+      } else {
+        res.send({
+          message: "Response Successfully",
+          data,
+        });
+      }
     } else {
       throw new Error();
     }
