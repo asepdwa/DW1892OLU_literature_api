@@ -18,7 +18,7 @@ const schema = Joi.object({
 
 exports.get = async (req, res) => {
   try {
-    const { q, from, to, status } = req.query;
+    const { q, from, to, status, download } = req.query;
     const { id } = req.params;
 
     const literatureQuery = {
@@ -70,6 +70,25 @@ exports.get = async (req, res) => {
             exclude: ["createdAt", "updatedAt"],
           },
         });
+
+    if (download) {
+      const storage = new Storage(storageConfig);
+      storage
+        .refFromURL(data.fileUrl)
+        .getDownloadURL()
+        .then(function (url) {
+          var xhr = new XMLHttpRequest();
+          xhr.responseType = "blob";
+          xhr.onload = function (event) {
+            var blob = xhr.response;
+          };
+          xhr.open("GET", url);
+          xhr.send();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
 
     if (data) {
       res.send({
