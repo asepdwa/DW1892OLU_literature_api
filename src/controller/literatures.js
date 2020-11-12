@@ -100,7 +100,7 @@ exports.add = async (req, res) => {
   }
 
   try {
-    let publicUrl;
+    var publicUrl;
     const fileName = req.files["file"][0].filename;
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
