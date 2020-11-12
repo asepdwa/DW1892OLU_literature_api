@@ -40,8 +40,9 @@ exports.authentication = {
       params: (req, file) => {
         return {
           folder: `literature/${file.fieldname}s`,
-          resource_type: file.fieldname === "file" ? "raw" : "image", // "file" ? "raw" : "image"
+          resource_type: "image", // "file" ? "raw" : "image"
           public_id: Date.now() + "-" + file.originalname.replace(" ", "-"),
+          eager: { format: "jpg", crop: "thumb" },
         };
       },
     });
