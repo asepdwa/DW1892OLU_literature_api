@@ -3,6 +3,11 @@ const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 
+const { Storage } = require("@google-cloud/storage");
+const Datauri = require("datauri/parser");
+const path = require("path");
+const { buketUri, storageConfig } = require("../../config/firebase");
+
 const schema = Joi.object({
   title: Joi.string().min(6).required(),
   publication: Joi.string().required(),
@@ -97,21 +102,46 @@ exports.add = async (req, res) => {
   }
 
   try {
-    const fileUrl = req.files["file"][0].path;
-    const thumbnailUrl = req.files["file"][0].path;
+    const fileName = req.files["file"][0].filename;
+    const thumbnailUrl =
+      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
-    const data = await Literatures.create({
-      ...payload,
-      fileUrl,
-      thumbnailUrl,
+    // Create new storage instance with Firebase project credentials
+    const storage = new Storage(storageConfig);
+    // Create a bucket associated to Firebase storage bucket
+    const bucket = storage.bucket(buketUri);
+    const blob = await bucket.file(fileName);
+    // Create writable stream and specifying file mimetype
+    const blobWriter = blob.createWriteStream({
+      metadata: {
+        contentType: req.files["file"][0].mimetype,
+      },
     });
-    res.send({
-      message:
-        payload.status === "Approved"
-          ? "Thank you for adding your own literature to our website."
-          : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
-      data,
+
+    blobWriter.on("error", (err) => new Error(err));
+    blobWriter.on("finish", () => {
+      // Assembling public URL for accessing the file via HTTP
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${
+        bucket.name
+      }/o/${encodeURI(blob.name)}?alt=media`;
+      const data = await Literatures.create({
+        ...payload,
+        fileUrl,
+        thumbnailUrl,
+      });
+      res.send({
+        message:
+          payload.status === "Approved"
+            ? "Thank you for adding your own literature to our website."
+            : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
+        data,
+      });
     });
+
+    // When there is no more data to be consumed from the stream
+    blobWriter.end(req.file.buffer);
+
+    
   } catch (err) {
     console.log(err);
 

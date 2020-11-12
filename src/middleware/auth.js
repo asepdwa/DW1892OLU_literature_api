@@ -35,20 +35,20 @@ exports.authentication = {
   },
 
   files_upload: function (uploadFields) {
-    const storage = new CloudinaryStorage({
-      cloudinary: cloudinary,
-      params: (req, file) => {
-        return {
-          folder: `literature/${file.fieldname}s`,
-          resource_type: "image", // "file" ? "raw" : "image"
-          page: 1,
-          public_id:
-            Date.now() + "-" + file.originalname.replace(" ", "-") + ".jpg",
-          eager: { format: "jpg", crop: "thumb" },
-          eager_async: true,
-        };
-      },
-    });
+    const storage =
+      uploadFields.name === "file"
+        ? multer.memoryStorage()
+        : new CloudinaryStorage({
+            cloudinary: cloudinary,
+            params: (req, file) => {
+              return {
+                folder: `literature/${file.fieldname}s`,
+                resource_type: "image",
+                public_id:
+                  Date.now() + "-" + file.originalname.replace(" ", "-"),
+              };
+            },
+          });
 
     // var storage = multer.diskStorage({
     //   destination: function (req, file, cb) {
