@@ -125,7 +125,7 @@ exports.add = async (req, res) => {
       }/o/${encodeURI(blob.name)}?alt=media`;
     });
     // When there is no more data to be consumed from the stream
-    blobWriter.end(req.file.buffer);
+    blobWriter.end(req.files["file"][0].buffer);
 
     const data = await Literatures.create({
       ...payload,
