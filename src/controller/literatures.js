@@ -100,7 +100,7 @@ exports.add = async (req, res) => {
   }
 
   try {
-    var fileUrl;
+    let fileUrl;
     const fileName = req.files["file"][0].filename;
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
@@ -118,12 +118,12 @@ exports.add = async (req, res) => {
     });
 
     blobWriter.on("error", (err) => new Error(err));
-    blobWriter.on("finish", () => {
-      // Assembling public URL for accessing the file via HTTP
-      fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
-        bucket.name
-      }/o/${encodeURI(blob.name)}?alt=media`;
-    });
+    const finishWrite = blobWriter.on("finish");
+    fileUrl = finishWrite
+      ? `https://firebasestorage.googleapis.com/v0/b/${
+          bucket.name
+        }/o/${encodeURI(blob.name)}?alt=media`
+      : "Error";
 
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.files["file"][0].buffer);
