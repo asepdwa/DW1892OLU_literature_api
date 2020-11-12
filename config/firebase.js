@@ -1,6 +1,6 @@
 exports.storageConfig = {
-  projectId: "literature-70cbb",
+  projectId: "literature-e7222",
   keyFilename: "./config/literature.json",
 };
 
-exports.buketUri = "gs://literature-70cbb.appspot.com";
+exports.buketUri = "gs://literature-e7222.appspot.com";
