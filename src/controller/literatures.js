@@ -100,7 +100,6 @@ exports.add = async (req, res) => {
   }
 
   try {
-    let fileUrl;
     const fileName = req.files["file"][0].filename;
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
@@ -118,28 +117,36 @@ exports.add = async (req, res) => {
     });
 
     blobWriter.on("error", (err) => new Error(err));
-    const finishWrite = blobWriter.on("finish");
-    fileUrl = finishWrite
-      ? `https://firebasestorage.googleapis.com/v0/b/${
-          bucket.name
-        }/o/${encodeURI(blob.name)}?alt=media`
-      : "Error";
+    blobWriter.on("finish", async () => {
+      const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
+        bucket.name
+      }/o/${encodeURI(blob.name)}?alt=media`;
+      try {
+        const data = await Literatures.create({
+          ...payload,
+          fileUrl,
+          thumbnailUrl,
+        });
+        res.send({
+          message:
+            payload.status === "Approved"
+              ? "Thank you for adding your own literature to our website."
+              : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
+          data,
+        });
+      } catch (error) {
+        console.log(err);
+
+        res.status(500).send({
+          error: {
+            message: "Server ERROR",
+          },
+        });
+      }
+    });
 
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.files["file"][0].buffer);
-
-    const data = await Literatures.create({
-      ...payload,
-      fileUrl,
-      thumbnailUrl,
-    });
-    res.send({
-      message:
-        payload.status === "Approved"
-          ? "Thank you for adding your own literature to our website."
-          : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
-      data,
-    });
   } catch (err) {
     console.log(err);
 
