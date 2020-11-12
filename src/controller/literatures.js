@@ -100,8 +100,7 @@ exports.add = async (req, res) => {
   }
 
   try {
-    const fileName =
-      Date.now() + "-" + req.files["file"][0].originalname.replace(" ", "-");
+    const fileName = Date.now() + "-" + req.files["file"][0].originalname;
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
