@@ -4,8 +4,6 @@ const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 
 const { Storage } = require("@google-cloud/storage");
-const Datauri = require("datauri/parser");
-const path = require("path");
 const { buketUri, storageConfig } = require("../../config/firebase");
 
 const schema = Joi.object({
@@ -102,6 +100,7 @@ exports.add = async (req, res) => {
   }
 
   try {
+    let publicUrl;
     const fileName = req.files["file"][0].filename;
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
@@ -121,27 +120,25 @@ exports.add = async (req, res) => {
     blobWriter.on("error", (err) => new Error(err));
     blobWriter.on("finish", () => {
       // Assembling public URL for accessing the file via HTTP
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${
+      publicUrl = `https://firebasestorage.googleapis.com/v0/b/${
         bucket.name
       }/o/${encodeURI(blob.name)}?alt=media`;
-      const data = await Literatures.create({
-        ...payload,
-        fileUrl,
-        thumbnailUrl,
-      });
-      res.send({
-        message:
-          payload.status === "Approved"
-            ? "Thank you for adding your own literature to our website."
-            : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
-        data,
-      });
     });
-
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
-    
+    const data = await Literatures.create({
+      ...payload,
+      publicUrl,
+      thumbnailUrl,
+    });
+    res.send({
+      message:
+        payload.status === "Approved"
+          ? "Thank you for adding your own literature to our website."
+          : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
+      data,
+    });
   } catch (err) {
     console.log(err);
 
