@@ -41,7 +41,13 @@ exports.authentication = {
         return {
           folder: `literature/${file.fieldname}s`,
           resource_type: "image", // "file" ? "raw" : "image"
-          public_id: Date.now() + "-" + file.originalname.replace(" ", "-"),
+          page: 1,
+          public_id:
+            Date.now() +
+            "-" +
+            file.originalname
+              .replace(" ", "-")
+              .replace(".pdf" || ".PDF", ".jpg"),
           eager: { format: "jpg", crop: "thumb" },
         };
       },
