@@ -14,6 +14,8 @@ module.exports = {
           model: "Literatures",
           key: "id",
         },
+        onUpdate: "SET NULL",
+        onDelete: "SET NULL",
       },
       UserId: {
         type: Sequelize.INTEGER,
@@ -21,6 +23,8 @@ module.exports = {
           model: "Users",
           key: "id",
         },
+        onUpdate: "SET NULL",
+        onDelete: "SET NULL",
       },
       createdAt: {
         allowNull: true,
