@@ -74,10 +74,9 @@ exports.get = async (req, res) => {
         });
 
     if (data) {
-      console.log(data[0].fileUrl);
       if (id) {
         const downloadUrl = await storage
-          .refFromURL(data[0].fileUrl)
+          .refFromURL(data.fileUrl)
           .getDownloadURL();
         res.send({
           message: "Response Successfully",
