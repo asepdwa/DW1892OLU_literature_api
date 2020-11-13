@@ -135,13 +135,15 @@ exports.add = async (req, res) => {
         type: "JPEG", //default
         quality: 70, //default
       },
-    }).then((result) => {
-      const blobWriter_2 = blob_2.createWriteStream(pdfThumbBuffer);
-      blobWriter_2.end(result);
+    })
+      .then((result) => {
+        const blobWriter_2 = blob_2.createWriteStream(result);
+        blobWriter_2.end(result.read());
 
-      console.log(result);
-      console.log(result.read());
-    });
+        console.log(result);
+        console.log(result.read());
+      })
+      .catch((err) => console.log(err));
 
     const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
       bucket.name
