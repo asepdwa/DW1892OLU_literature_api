@@ -122,12 +122,14 @@ exports.add = async (req, res) => {
     const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
       bucket.name
     }/o/${encodeURI(blob.name)}?alt=media`;
+
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
     const blob_2 = await bucket.file(
       fileName.replace(".pdf" || ".PDF", ".jpg")
     );
+
     const blobWriter_2 = blob_2.createWriteStream({
       metadata: {
         contentType: "image/jpeg",
@@ -141,6 +143,10 @@ exports.add = async (req, res) => {
         quality: 70, //default
       },
     });
+
+    const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
+      bucket.name
+    }/o/${encodeURI(blob_2.name)}?alt=media`;
 
     blobWriter_2.end(pdfThumbBuffer);
 
