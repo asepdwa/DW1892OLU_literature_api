@@ -34,9 +34,9 @@ exports.authentication = {
     }
   },
 
-  files_upload: function (uploadFields) {
+  file_upload: function (uploadField) {
     const storage =
-      uploadFields.name === "file"
+      uploadField === "file"
         ? multer.memoryStorage()
         : new CloudinaryStorage({
             cloudinary: cloudinary,
@@ -99,7 +99,7 @@ exports.authentication = {
       limits: {
         fileSize: parseInt(maxSize),
       },
-    }).fields(uploadFields);
+    }).single(uploadField);
 
     return (req, res, next) => {
       upload(req, res, function (err) {

@@ -1,5 +1,4 @@
 const express = require("express");
-require("dotenv").config();
 
 const router = express.Router();
 
@@ -30,10 +29,7 @@ router.get("/user/:id", [authentication.authorization], getUserData);
 router.patch("/user/:id", [authentication.authorization], updateUser);
 router.patch(
   "/user/avatar/:id",
-  [
-    authentication.authorization,
-    authentication.files_upload([{ name: "avatar", maxCount: 1 }]),
-  ],
+  [authentication.authorization, authentication.file_upload("avatar")],
   updateUserAvatar
 );
 router.delete("/user/:id", [authentication.authorization], deleteUser);
@@ -50,10 +46,7 @@ router.get("/literatures", [authentication.authorization], getLiteratureData);
 
 router.post(
   "/literature",
-  [
-    authentication.authorization,
-    authentication.files_upload([{ name: "file", maxCount: 1 }]),
-  ],
+  [authentication.authorization, authentication.file_upload("file")],
   addLiterature
 );
 
