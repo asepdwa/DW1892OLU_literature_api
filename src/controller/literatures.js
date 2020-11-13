@@ -128,13 +128,11 @@ exports.add = async (req, res) => {
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
-    const pdfThumb = await convertapi.convert(
-      "thumbnail",
-      {
-        File: fileUrl,
-      },
-      "pdf"
-    );
+    const pdfThumb = await convertapi.convert("thumbnail", {
+      File: fileUrl,
+    });
+
+    console.log(pdfThumb);
 
     const blob_2 = await bucket.file(
       fileName.toLowerCase().replace(".pdf", ".jpg")
@@ -153,7 +151,7 @@ exports.add = async (req, res) => {
     }/o/${encodeURI(blob_2.name)}?alt=media`;
 
     // When there is no more data to be consumed from the stream
-    blobWriter_2.end(pdfThumb.read());
+    blobWriter_2.end(pdfThumb);
 
     try {
       const data = await Literatures.create({
