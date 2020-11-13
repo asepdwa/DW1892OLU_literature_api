@@ -104,8 +104,8 @@ exports.add = async (req, res) => {
 
   try {
     const fileName = Date.now() + "-" + req.file.originalname;
-    const thumbnailUrl =
-      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
+    // const thumbnailUrl =
+    //   "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
     // Create a bucket associated to Firebase storage bucket
     const bucket = storage.bucket(buketUri);
@@ -126,29 +126,29 @@ exports.add = async (req, res) => {
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
-    // const blob_2 = await bucket.file(
-    //   fileName.replace(".pdf" || ".PDF", ".jpg")
-    // );
+    const blob_2 = await bucket.file(
+      fileName.replace(".pdf" || ".PDF", ".jpg")
+    );
 
-    // const blobWriter_2 = blob_2.createWriteStream({
-    //   metadata: {
-    //     contentType: "image/jpeg",
-    //     firebaseStorageDownloadTokens: null,
-    //   },
-    // });
+    const blobWriter_2 = blob_2.createWriteStream({
+      metadata: {
+        contentType: "image/jpg",
+        firebaseStorageDownloadTokens: null,
+      },
+    });
 
-    // const pdfThumbBuffer = await pdfThumb(req.file.buffer, {
-    //   compress: {
-    //     type: "JPEG", //default
-    //     quality: 70, //default
-    //   },
-    // });
+    const pdfThumbBuffer = await pdfThumb(req.file.buffer, {
+      compress: {
+        type: "JPEG", //default
+        quality: 70, //default
+      },
+    });
 
-    // const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
-    //   bucket.name
-    // }/o/${encodeURI(blob_2.name)}?alt=media`;
+    const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
+      bucket.name
+    }/o/${encodeURI(blob_2.name)}?alt=media`;
 
-    // blobWriter_2.end(pdfThumbBuffer);
+    blobWriter_2.end(pdfThumbBuffer);
 
     try {
       const data = await Literatures.create({
