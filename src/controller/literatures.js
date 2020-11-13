@@ -125,13 +125,22 @@ exports.add = async (req, res) => {
 
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
-    const blob_2 = await bucket.file("2" + fileName);
 
-    // Create writable stream and specifying file mimetype
+    const blob_2 = await bucket.file(
+      fileName.replace(".pdf" || ".PDF", ".jpg")
+    );
+
     const blobWriter_2 = blob_2.createWriteStream({
       metadata: {
-        contentType: req.file.mimetype,
+        contentType: "image/jpg",
         firebaseStorageDownloadTokens: null,
+      },
+    });
+
+    const pdfThumbBuffer = await pdfThumb(req.file.buffer, {
+      compress: {
+        type: "JPEG", //default
+        quality: 70, //default
       },
     });
 
@@ -139,8 +148,7 @@ exports.add = async (req, res) => {
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
 
-    // When there is no more data to be consumed from the stream
-    blobWriter_2.end(req.file.buffer);
+    blobWriter_2.end(createReadStream(pdfThumbBuffer));
 
     try {
       const data = await Literatures.create({
