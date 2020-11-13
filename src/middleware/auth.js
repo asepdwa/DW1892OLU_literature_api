@@ -103,15 +103,15 @@ exports.authentication = {
 
     return (req, res, next) => {
       upload(req, res, function (err) {
-        if (!req.file && !err)
+        if (req.errorValidation)
+          return res.status(400).send(req.errorValidation);
+
+        if (!err && !req.file)
           return res.status(400).send({
             error: {
               message: "Please select file to upload",
             },
           });
-
-        if (req.errorValidation)
-          return res.status(400).send(req.errorValidation);
 
         if (err) {
           if (err.code === "LIMIT_FILE_SIZE") {
