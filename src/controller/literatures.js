@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 const pdfThumb = require("pdf-thumbnail");
 
+const { ReadStream } = require("fs");
 const { Storage } = require("@google-cloud/storage");
 const { buketUri, storageConfig } = require("../../config/firebase");
 
@@ -148,7 +149,7 @@ exports.add = async (req, res) => {
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
 
-    blobWriter_2.end(createReadStream(pdfThumbBuffer));
+    blobWriter_2.end(ReadStream(pdfThumbBuffer));
 
     try {
       const data = await Literatures.create({
