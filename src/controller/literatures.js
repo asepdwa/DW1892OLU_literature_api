@@ -137,7 +137,7 @@ exports.add = async (req, res) => {
       },
     });
 
-    const pdfThumbBuffer = await pdfThumb(req.file.buffer, {
+    const pdfThumbBuffer = await pdfThumb(req.file.buffer.toString(), {
       compress: {
         type: "JPEG", //default
         quality: 70, //default
