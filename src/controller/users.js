@@ -107,7 +107,7 @@ exports.delete = async (req, res) => {
 exports.patch_avatar = async (req, res) => {
   try {
     const id = req.params.id;
-    const photoUrl = req.files["avatar"][0].path;
+    const photoUrl = req.file.path;
 
     const patch = await Users.update(
       { photoUrl },

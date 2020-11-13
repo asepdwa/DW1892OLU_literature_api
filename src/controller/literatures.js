@@ -2,6 +2,7 @@ const { Literatures, Users } = require("../../models");
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
+const pdfThumb = require("pdf-thumbnail");
 
 const { Storage } = require("@google-cloud/storage");
 const { buketUri, storageConfig } = require("../../config/firebase");
@@ -102,13 +103,14 @@ exports.add = async (req, res) => {
   }
 
   try {
-    const fileName = Date.now() + "-" + req.files["file"][0].originalname;
-    const thumbnailUrl =
-      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
+    const fileName = Date.now() + "-" + req.file.originalname;
+    // const thumbnailUrl =
+    //   "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
     // Create a bucket associated to Firebase storage bucket
     const bucket = storage.bucket(buketUri);
     const blob = await bucket.file(fileName);
+
     // Create writable stream and specifying file mimetype
     const blobWriter = blob.createWriteStream({
       metadata: {
@@ -117,38 +119,53 @@ exports.add = async (req, res) => {
       },
     });
 
-    blobWriter.on("error", (err) => new Error(err));
-    blobWriter.on("finish", async () => {
-      const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
-        bucket.name
-      }/o/${encodeURI(blob.name)}?alt=media`;
+    const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
+      bucket.name
+    }/o/${encodeURI(blob.name)}?alt=media`;
+    // When there is no more data to be consumed from the stream
+    blobWriter.end(req.file.buffer);
 
-      try {
-        const data = await Literatures.create({
-          ...payload,
-          fileUrl,
-          thumbnailUrl,
-        });
-        res.send({
-          message:
-            payload.status === "Approved"
-              ? "Thank you for adding your own literature to our website."
-              : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
-          data,
-        });
-      } catch (error) {
-        console.log(err);
-
-        res.status(500).send({
-          error: {
-            message: "Server ERROR",
-          },
-        });
-      }
+    const blob_2 = await bucket.file(
+      fileName.replace(".pdf" || ".PDF", ".jpg")
+    );
+    const blobWriter_2 = blob_2.createWriteStream({
+      metadata: {
+        contentType: "image/jpeg",
+        firebaseStorageDownloadTokens: null,
+      },
     });
 
-    // When there is no more data to be consumed from the stream
-    blobWriter.end(req.files["file"][0].buffer);
+    const pdfThumbBuffer = await pdfThumb(req.file.buffer, {
+      compress: {
+        type: "JPEG", //default
+        quality: 70, //default
+      },
+    });
+
+    blobWriter_2.end(pdfThumbBuffer);
+
+    try {
+      const data = await Literatures.create({
+        ...payload,
+        fileUrl,
+        thumbnailUrl,
+      });
+      res.send({
+        message:
+          payload.status === "Approved"
+            ? "Thank you for adding your own literature to our website."
+            : "Thank you for adding your own literature to our website, please wait 1 x 24 hours to verifying by admin",
+        data,
+      });
+    } catch (error) {
+      console.log(err);
+
+      res.status(500).send({
+        error: {
+          message: "Server ERROR",
+        },
+      });
+    }
   } catch (err) {
     console.log(err);
 
