@@ -2,7 +2,7 @@ const { Literatures, Users } = require("../../models");
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
-const pdfThumb = require("pdf-thumbnail");
+const pdf = require("pdf-thumbnail");
 
 const { ReadStream } = require("fs");
 const { Storage } = require("@google-cloud/storage");
@@ -138,7 +138,7 @@ exports.add = async (req, res) => {
       },
     });
 
-    const pdfThumbBuffer = await pdfThumb(req.file.buffer, {
+    const pdfThumbBuffer = await pdf(req.file.buffer, {
       compress: {
         type: "JPEG", //default
         quality: 70, //default
