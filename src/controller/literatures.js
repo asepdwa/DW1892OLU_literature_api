@@ -130,25 +130,18 @@ exports.add = async (req, res) => {
       fileName.replace(".pdf" || ".PDF", ".jpg")
     );
 
-    const blobWriter_2 = blob_2.createWriteStream({
-      metadata: {
-        contentType: "image/jpg",
-        firebaseStorageDownloadTokens: null,
-      },
-    });
-
-    const pdfThumbBuffer = await pdfThumb(req.file.buffer.toString(), {
+    const pdfThumbStream = await pdfThumb(req.file.buffer, {
       compress: {
         type: "JPEG", //default
         quality: 70, //default
       },
     });
 
+    const blobWriter_2 = blob_2.createWriteStream(pdfThumbStream);
+
     const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
-
-    blobWriter_2.end(pdfThumbBuffer);
 
     try {
       const data = await Literatures.create({
