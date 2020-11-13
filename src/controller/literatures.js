@@ -4,9 +4,9 @@ const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 
 const { Storage } = require("@google-cloud/storage");
-const storage = new Storage(storageConfig);
-
 const { buketUri, storageConfig } = require("../../config/firebase");
+
+const storage = new Storage(storageConfig);
 
 const schema = Joi.object({
   title: Joi.string().min(6).required(),
