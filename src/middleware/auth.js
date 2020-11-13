@@ -73,7 +73,7 @@ exports.authentication = {
       if (file.fieldname === "file") {
         if (!file.originalname.match(/\.(PDF|pdf)$/)) {
           req.errorValidation = {
-            message: "Only PDF Files Are Allowed",
+            message: "Only PDF File Are Allowed",
           };
           return cb(new Error(req.errorValidation.message), false);
         }
@@ -84,7 +84,7 @@ exports.authentication = {
         if (!file.mimetype.match("image.*")) {
           req.errorValidation = {
             error: {
-              message: "Only Image Files Are Allowed",
+              message: "Only Image File Are Allowed",
             },
           };
           return cb(new Error(req.errorValidation.message), false);
@@ -103,7 +103,7 @@ exports.authentication = {
 
     return (req, res, next) => {
       upload(req, res, function (err) {
-        if (!req.files && !err)
+        if (!req.file && !err)
           return res.status(400).send({
             error: {
               message: "Please select file to upload",
