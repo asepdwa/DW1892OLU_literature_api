@@ -72,15 +72,16 @@ exports.get = async (req, res) => {
         });
 
     if (data) {
+      console.log(data[0].fileUrl);
       if (id) {
-        const storage = new Storage(storageConfig);
-        const downloadUrl = storage
-          .refFromURL(data[0].fileUrl)
-          .getDownloadURL();
+        // const storage = new Storage(storageConfig);
+        // const downloadUrl = await storage
+        //   .refFromURL(data[0].fileUrl)
+        //   .getDownloadURL();
         res.send({
           message: "Response Successfully",
           data,
-          downloadUrl,
+          // downloadUrl,
         });
       } else {
         res.send({
