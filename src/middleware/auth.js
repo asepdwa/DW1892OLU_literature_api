@@ -36,7 +36,7 @@ exports.authentication = {
 
   file_upload: function (uploadField) {
     const storage =
-      uploadField === "file"
+      uploadField !== "avatar"
         ? multer.memoryStorage()
         : new CloudinaryStorage({
             cloudinary: cloudinary,
