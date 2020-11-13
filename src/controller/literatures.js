@@ -2,7 +2,9 @@ const { Literatures, Users } = require("../../models");
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
-const pdfThumb = require("pdf-thumbnail");
+const convertapi = require("convertapi")("7ZtF3Ao7avqqbYHm");
+
+// const pdfThumb = require("pdf-thumbnail");
 
 const { Storage } = require("@google-cloud/storage");
 const { buketUri, storageConfig } = require("../../config/firebase");
@@ -126,28 +128,32 @@ exports.add = async (req, res) => {
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
-    const blob_2 = await bucket.file(
-      fileName.replace(".pdf" || ".PDF", ".jpg")
+    const pdfThumb = await convertapi.convert(
+      "thumbnail",
+      {
+        File: fileUrl,
+      },
+      "pdf"
     );
 
-    pdfThumb(req.file.buffer, {
-      compress: {
-        type: "JPEG", //default
-        quality: 70, //default
-      },
-    })
-      .then((result) => {
-        const blobWriter_2 = blob_2.createWriteStream(result);
-        blobWriter_2.end(result.read());
+    const blob_2 = await bucket.file(
+      fileName.toLowerCase().replace(".pdf", ".jpg")
+    );
 
-        console.log(result);
-        console.log(result.read());
-      })
-      .catch((err) => console.log(err));
+    // Create writable stream and specifying file mimetype
+    const blobWriter_2 = blob_2.createWriteStream({
+      metadata: {
+        contentType: "image/jpg",
+        firebaseStorageDownloadTokens: null,
+      },
+    });
 
     const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
+
+    // When there is no more data to be consumed from the stream
+    blobWriter_2.end(pdfThumb.read());
 
     try {
       const data = await Literatures.create({
