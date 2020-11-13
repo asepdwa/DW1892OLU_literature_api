@@ -4,6 +4,8 @@ const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 
 const { Storage } = require("@google-cloud/storage");
+const storage = new Storage(storageConfig);
+
 const { buketUri, storageConfig } = require("../../config/firebase");
 
 const schema = Joi.object({
@@ -72,16 +74,15 @@ exports.get = async (req, res) => {
         });
 
     if (data) {
+      console.log(data[0].fileUrl);
       if (id) {
-        console.log(data.fileUrl);
-        // const storage = new Storage(storageConfig);
-        // const downloadUrl = await storage
-        //   .refFromURL(data[0].fileUrl)
-        //   .getDownloadURL();
+        const downloadUrl = await storage
+          .refFromURL(data[0].fileUrl)
+          .getDownloadURL();
         res.send({
           message: "Response Successfully",
           data,
-          // downloadUrl,
+          downloadUrl,
         });
       } else {
         res.send({
@@ -117,8 +118,6 @@ exports.add = async (req, res) => {
     const thumbnailUrl =
       "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
-    // Create new storage instance with Firebase project credentials
-    const storage = new Storage(storageConfig);
     // Create a bucket associated to Firebase storage bucket
     const bucket = storage.bucket(buketUri);
     const blob = await bucket.file(fileName);
@@ -126,6 +125,7 @@ exports.add = async (req, res) => {
     const blobWriter = blob.createWriteStream({
       metadata: {
         contentType: req.files["file"][0].mimetype,
+        firebaseStorageDownloadTokens: null,
       },
     });
 
