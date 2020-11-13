@@ -149,7 +149,7 @@ exports.add = async (req, res) => {
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
 
-    blobWriter_2.end(ReadStream(pdfThumbBuffer));
+    blobWriter_2.end(pdfThumbBuffer.read());
 
     try {
       const data = await Literatures.create({
