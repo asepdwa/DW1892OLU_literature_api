@@ -1,55 +1,37 @@
 const { Users, Literatures, Collections } = require("../../models");
 
-const userQuery = {
-  include: {
-    model: Collections,
-    as: "collections_data",
-    through: {
-      model: Collections,
-      as: "info",
-      attributes: {
-        include: ["id"],
-        exclude: ["createdAt", "updatedAt"],
-      },
-    },
-  },
-  attributes: {
-    exclude: ["createdAt", "updatedAt", "password"],
-  },
-};
-
 exports.get = async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     let data = null;
     !id
-      ? (data = await Users.findAll(userQuery))
+      ? (data = await Users.findAll())
       : (data = await Users.findOne({
           where: {
             id,
           },
-          include: {
-            model: Literatures,
-            as: "collections_data",
-            through: {
-              model: Collections,
-              as: "info",
-              attributes: {
-                include: ["id"],
-                exclude: ["createdAt", "updatedAt"],
-              },
-            },
-            include: {
-              model: Users,
-              as: "uploader",
-              attributes: {
-                exclude: ["createdAt", "updatedAt", "password"],
-              },
-            },
-            attributes: {
-              exclude: ["createdAt", "updatedAt", "info"],
-            },
-          },
+          // include: {
+          //   model: Literatures,
+          //   as: "collections_data",
+          //   through: {
+          //     model: Collections,
+          //     as: "info",
+          //     attributes: {
+          //       include: ["id"],
+          //       exclude: ["createdAt", "updatedAt"],
+          //     },
+          //   },
+          //   include: {
+          //     model: Users,
+          //     as: "uploader",
+          //     attributes: {
+          //       exclude: ["createdAt", "updatedAt", "password"],
+          //     },
+          //   },
+          //   attributes: {
+          //     exclude: ["createdAt", "updatedAt", "info"],
+          //   },
+          // },
           attributes: {
             exclude: ["createdAt", "updatedAt", "password"],
           },

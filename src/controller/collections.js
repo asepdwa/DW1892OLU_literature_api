@@ -1,4 +1,63 @@
-const { Collections } = require("../../models");
+const { Collections, Literatures, Users } = require("../../models");
+
+exports.get = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page: pageQuery, limit: limitQuery } = req.query;
+
+    const page = pageQuery ? pageQuery - 1 : 0;
+    const pageSize = parseInt(limitQuery ? limitQuery : 12);
+
+    const data = await Collections.findAll({
+      where: {
+        UserId: id || "",
+      },
+      include: {
+        model: Literatures,
+        as: "collections_data",
+        through: {
+          model: Collections,
+          as: "info",
+          attributes: {
+            include: ["id"],
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+      order: [
+        ["createdAt", "DESC"],
+        ["id", "ASC"],
+      ],
+      offset: page * pageSize,
+      limit: pageSize,
+    });
+
+    if (data) {
+      res.send({
+        message: "Response Successfully",
+        data,
+      });
+    } else {
+      res.status(500).send({
+        message: "Not Found",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).send({
+      error: {
+        message: "Server ERROR",
+      },
+    });
+  }
+};
 
 exports.add = async (req, res) => {
   try {

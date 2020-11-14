@@ -24,8 +24,22 @@ const schema = Joi.object({
 
 exports.get = async (req, res) => {
   try {
-    const { q, from, to, status } = req.query;
+    const {
+      q,
+      from,
+      to,
+      status,
+      sort,
+      order,
+      uploader,
+      collector,
+      page: pageQuery,
+      limit: limitQuery,
+    } = req.query;
     const { id } = req.params;
+
+    const page = pageQuery ? pageQuery - 1 : 0;
+    const pageSize = parseInt(limitQuery ? limitQuery : 12);
 
     const literatureQuery = {
       where: {
@@ -39,12 +53,14 @@ exports.get = async (req, res) => {
           ),
           {
             title: {
-              [Op.like]: "%" + (q || "") + "%",
+              [Op.iLike]: "%" + (q || "") + "%",
             },
           },
           status && {
             status: status,
           },
+          Sequelize.literal(`uploader.id = ${uploader || ""}`),
+          Sequelize.literal(`user_collections.id = ${collector || ""}`),
         ],
       },
       include: {
@@ -53,10 +69,17 @@ exports.get = async (req, res) => {
         attributes: {
           exclude: ["createdAt", "updatedAt", "password"],
         },
+        required: true,
       },
       attributes: {
         exclude: ["createdAt", "updatedAt"],
       },
+      order: [
+        ["createdAt", "DESC"],
+        [sort || "id", order || "ASC"],
+      ],
+      offset: page * pageSize,
+      limit: pageSize,
     };
 
     const data = !id
@@ -83,7 +106,9 @@ exports.get = async (req, res) => {
         data,
       });
     } else {
-      throw new Error();
+      res.status(500).send({
+        message: "Not Found",
+      });
     }
   } catch (err) {
     console.log(err);
