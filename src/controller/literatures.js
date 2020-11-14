@@ -128,8 +128,13 @@ exports.add = async (req, res) => {
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
+    const uploadResult = await convertapi.upload(
+      req.file,
+      fileName.replace(".pdf" || ".PDF", ".jpg")
+    );
+
     const pdfPageOne = await convertapi.convert("extract", {
-      File: fileUrl,
+      File: uploadResult,
       PageRange: 1,
     });
 
