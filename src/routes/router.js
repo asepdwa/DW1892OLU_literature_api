@@ -46,7 +46,13 @@ router.get("/literatures", [authentication.authorization], getLiteratureData);
 
 router.post(
   "/literature",
-  [authentication.authorization, authentication.file_upload("file")],
+  [
+    authentication.authorization,
+    authentication.files_upload([
+      { name: "file", maxCount: 1 },
+      { name: "thumbnail", maxCount: 1 },
+    ]),
+  ],
   addLiterature
 );
 

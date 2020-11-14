@@ -3,7 +3,7 @@ const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 
-const convertapi = require("convertapi")("7ZtF3Ao7avqqbYHm");
+// const convertapi = require("convertapi")("7ZtF3Ao7avqqbYHm");
 // const pdfThumb = require("pdf-thumbnail");
 
 const { Storage } = require("@google-cloud/storage");
@@ -105,9 +105,10 @@ exports.add = async (req, res) => {
   }
 
   try {
-    const fileName = Date.now() + "-" + req.file.originalname;
-    // const thumbnailUrl =
-    //   "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
+    const fileName = Date.now() + "-" + req.files["file"][0].originalname;
+    const thumbnailUrl =
+      req.files["thumbnail"][0].path ||
+      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
 
     // Create a bucket associated to Firebase storage bucket
     const bucket = storage.bucket(buketUri);
@@ -116,7 +117,7 @@ exports.add = async (req, res) => {
     // Create writable stream and specifying file mimetype
     const blobWriter = blob.createWriteStream({
       metadata: {
-        contentType: req.file.mimetype,
+        contentType: req.files["file"][0].mimetype,
         firebaseStorageDownloadTokens: null,
       },
     });
@@ -126,41 +127,7 @@ exports.add = async (req, res) => {
     }/o/${encodeURI(blob.name)}?alt=media`;
 
     // When there is no more data to be consumed from the stream
-    blobWriter.end(req.file.buffer);
-
-    const uploadResult = await convertapi.upload(
-      req.file,
-      fileName.replace(".pdf" || ".PDF", ".jpg")
-    );
-
-    const pdfPageOne = await convertapi.convert("extract", {
-      File: uploadResult,
-      PageRange: 1,
-    });
-
-    const pdfThumbnail = await convertapi.convert("jpg", {
-      File: pdfPageOne,
-      ScaleImage: true,
-      ScaleProportions: true,
-      ImageWidth: 500,
-    });
-
-    const blob_2 = await bucket.file(pdfThumbnail.file().originalname);
-
-    // Create writable stream and specifying file mimetype
-    const blobWriter_2 = blob_2.createWriteStream({
-      metadata: {
-        contentType: pdfThumbnail.file().mimetype,
-        firebaseStorageDownloadTokens: null,
-      },
-    });
-
-    const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
-      bucket.name
-    }/o/${encodeURI(blob_2.name)}?alt=media`;
-
-    // When there is no more data to be consumed from the stream
-    blobWriter_2.end(pdfThumbnail.file().buffer);
+    blobWriter.end(req.files["file"][0].buffer);
 
     // const pdfThumb = await convertapi.convert("thumbnail", {
     //   File: req.file,
