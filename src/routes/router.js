@@ -78,7 +78,9 @@ router.delete(
 const {
   add: addCollection,
   delete: deleteCollection,
+  get: getCollection,
 } = require("../controller/collections");
+router.get("/collection/:id", [authentication.authorization], getCollection);
 router.post("/collection", [authentication.authorization], addCollection);
 router.delete("/collection", [authentication.authorization], deleteCollection);
 
