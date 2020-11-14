@@ -1,69 +1,69 @@
 const { Collections, Literatures, Users } = require("../../models");
 
-exports.get = async (req, res) => {
-  try {
-    const { page: pageQuery, limit: limitQuery } = req.query;
+// exports.get = async (req, res) => {
+//   try {
+//     const { page: pageQuery, limit: limitQuery } = req.query;
 
-    const page = pageQuery ? pageQuery - 1 : 0;
-    const pageSize = parseInt(limitQuery ? limitQuery : 12);
+//     const page = pageQuery ? pageQuery - 1 : 0;
+//     const pageSize = parseInt(limitQuery ? limitQuery : 12);
 
-    const data = await Users.findOne({
-      where: {
-        id: req.user.id,
-      },
-      include: {
-        model: Literatures,
-        as: "collections_data",
-        through: {
-          model: Collections,
-          as: "info",
-          attributes: {
-            include: ["id"],
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
-        include: {
-          model: Users,
-          as: "uploader",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password"],
-          },
-        },
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
-        },
-        offset: page * pageSize,
-        limit: pageSize,
-        order: [
-          ["createdAt", "DESC"],
-          ["id", "ASC"],
-        ],
-      },
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
+//     const data = await Users.findOne({
+//       where: {
+//         id: req.user.id,
+//       },
+//       include: {
+//         model: Literatures,
+//         as: "collections_data",
+//         through: {
+//           model: Collections,
+//           as: "info",
+//           attributes: {
+//             include: ["id"],
+//             exclude: ["createdAt", "updatedAt"],
+//           },
+//         },
+//         include: {
+//           model: Users,
+//           as: "uploader",
+//           attributes: {
+//             exclude: ["createdAt", "updatedAt", "password"],
+//           },
+//         },
+//         attributes: {
+//           exclude: ["createdAt", "updatedAt"],
+//         },
+//         offset: page * pageSize,
+//         limit: pageSize,
+//         order: [
+//           ["createdAt", "DESC"],
+//           ["id", "ASC"],
+//         ],
+//       },
+//       attributes: {
+//         exclude: ["createdAt", "updatedAt"],
+//       },
+//     });
 
-    if (data) {
-      res.send({
-        message: "Response Successfully",
-        data,
-      });
-    } else {
-      res.status(500).send({
-        message: "Not Found",
-      });
-    }
-  } catch (err) {
-    console.log(err);
+//     if (data) {
+//       res.send({
+//         message: "Response Successfully",
+//         data,
+//       });
+//     } else {
+//       res.status(500).send({
+//         message: "Not Found",
+//       });
+//     }
+//   } catch (err) {
+//     console.log(err);
 
-    res.status(500).send({
-      error: {
-        message: "Server ERROR",
-      },
-    });
-  }
-};
+//     res.status(500).send({
+//       error: {
+//         message: "Server ERROR",
+//       },
+//     });
+//   }
+// };
 
 exports.add = async (req, res) => {
   try {
@@ -86,11 +86,11 @@ exports.add = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const { UserId, LiteratureId } = req.query;
+    const { id } = req.params;
     const removed = await Collections.destroy({
       where: {
-        UserId,
-        LiteratureId,
+        UserId: req.user.id,
+        LiteratureId: id,
       },
     });
 

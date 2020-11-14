@@ -28,7 +28,7 @@ router.get("/users", [authentication.authorization], getUserData);
 router.get("/user/:id", [authentication.authorization], getUserData);
 router.patch("/user/:id", [authentication.authorization], updateUser);
 router.patch(
-  "/user/avatar/:id",
+  "/avatar",
   [authentication.authorization, authentication.file_upload("avatar")],
   updateUserAvatar
 );
