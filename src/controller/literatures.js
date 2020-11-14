@@ -129,7 +129,7 @@ exports.add = async (req, res) => {
     blobWriter.end(req.file.buffer);
 
     const pdfPageOne = await convertapi.convert("extract", {
-      File: req.file.path,
+      File: fileUrl,
       PageRange: 1,
     });
 
