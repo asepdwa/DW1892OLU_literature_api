@@ -32,7 +32,6 @@ exports.get = async (req, res) => {
       sort,
       order,
       uploader,
-      collector,
       page: pageQuery,
       limit: limitQuery,
     } = req.query;
@@ -59,12 +58,6 @@ exports.get = async (req, res) => {
           status && {
             status: status,
           },
-          uploader &&
-            sequelize.literal(`"Literatures"."uploader"."id" = "${uploader}"`),
-          collector &&
-            sequelize.literal(
-              `"Literatures"."user_collections"."id" = "${collector}"`
-            ),
         ],
       },
       include: {

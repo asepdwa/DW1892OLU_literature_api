@@ -1,4 +1,4 @@
-const { Collections } = require("../../models");
+const { Collections, Literatures } = require("../../models");
 
 exports.get = async (req, res) => {
   try {
