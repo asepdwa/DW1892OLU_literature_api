@@ -59,8 +59,8 @@ exports.get = async (req, res) => {
           status && {
             status: status,
           },
-          sequelize.literal(`uploader.id = ${uploader || ""}`),
-          sequelize.literal(`user_collections.id = ${collector || ""}`),
+          sequelize.literal(`"uploader"."id" = "${uploader || NULL}"`),
+          sequelize.literal(`"user_collections"."id" = "${collector || NULL}"`),
         ],
       },
       include: {
@@ -69,7 +69,6 @@ exports.get = async (req, res) => {
         attributes: {
           exclude: ["createdAt", "updatedAt", "password"],
         },
-        required: true,
       },
       attributes: {
         exclude: ["createdAt", "updatedAt"],
