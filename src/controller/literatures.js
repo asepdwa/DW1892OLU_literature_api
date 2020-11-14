@@ -59,8 +59,8 @@ exports.get = async (req, res) => {
           status && {
             status: status,
           },
-          sequelize.literal(`"uploader"."id" = "${uploader || NULL}"`),
-          sequelize.literal(`"user_collections"."id" = "${collector || NULL}"`),
+          sequelize.literal(`"uploader"."id" = "${uploader || ``}"`),
+          sequelize.literal(`"user_collections"."id" = "${collector || ``}"`),
         ],
       },
       include: {
