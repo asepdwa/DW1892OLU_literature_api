@@ -10,6 +10,7 @@ const { Storage } = require("@google-cloud/storage");
 const { buketUri, storageConfig } = require("../../config/firebase");
 
 const storage = new Storage(storageConfig);
+const bucket = storage.bucket(buketUri);
 
 const schema = Joi.object({
   title: Joi.string().min(6).required(),
@@ -107,11 +108,9 @@ exports.add = async (req, res) => {
   try {
     const fileName = Date.now() + "-" + req.files["file"][0].originalname;
     const thumbnailName =
-      req.files["thumbnail"][0].path ||
-      "https://res.cloudinary.com/literature/image/upload/v1604297802/literature/thumbnails/default_splwib.png";
-
+      Date.now() + "-" + req.files["thumbnail"][0].originalname;
     // Create a bucket associated to Firebase storage bucket
-    const bucket = storage.bucket(buketUri);
+
     const blob = await bucket.file(fileName);
 
     // Create writable stream and specifying file mimetype
