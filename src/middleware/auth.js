@@ -50,25 +50,6 @@ exports.authentication = {
             },
           });
 
-    // var storage = multer.diskStorage({
-    //   destination: function (req, file, cb) {
-    //     if (file.originalname.match(/\.(PDF|pdf)$/)) {
-    //       cb(null, ebookDestination);
-    //     } else {
-    //       if (file.fieldname === "avatar") {
-    //         cb(null, avatarDestination);
-    //       } else if (file.fieldname === "thumbnail") {
-    //         cb(null, ebookThumbDestination);
-    //       } else {
-    //         cb(null, defaultDestination);
-    //       }
-    //     }
-    //   },
-    //   filename: function (req, file, cb) {
-    //     cb(null, Date.now() + "-" + file.originalname.replace(" ", "-"));
-    //   },
-    // });
-
     const typeFileFilters = function (req, file, cb) {
       if (file.fieldname === "file") {
         if (!file.originalname.match(/\.(PDF|pdf)$/)) {
@@ -107,6 +88,80 @@ exports.authentication = {
           return res.status(400).send(req.errorValidation);
 
         if (!err && !req.file)
+          return res.status(400).send({
+            error: {
+              message: "Please select file to upload",
+            },
+          });
+
+        if (err) {
+          if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).send({
+              error: {
+                message: `Max file sized ${maxSize / 1000000}MB`,
+              },
+            });
+          }
+          return res.status(400).send(err);
+        }
+
+        return next();
+      });
+    };
+  },
+
+  files_upload: function (uploadFields) {
+    const storage = function (req, file) {
+      if (file.fieldname === "file") {
+        return multer.memoryStorage();
+      } else {
+        return new CloudinaryStorage({
+          cloudinary: cloudinary,
+          folder: `literature/${file.fieldname}s`,
+          resource_type: "image",
+          public_id: Date.now() + "-" + file.originalname.replace(" ", "-"),
+        });
+      }
+    };
+
+    const typeFileFilters = function (req, file, cb) {
+      if (file.fieldname === "file") {
+        if (!file.originalname.match(/\.(PDF|pdf)$/)) {
+          req.errorValidation = {
+            message: "Only PDF File Are Allowed",
+          };
+          return cb(new Error(req.errorValidation.message), false);
+        }
+      } else if (
+        file.fieldname === "avatar" ||
+        file.fieldname === "thumbnail"
+      ) {
+        if (!file.mimetype.match("image.*")) {
+          req.errorValidation = {
+            error: {
+              message: "Only Image File Are Allowed",
+            },
+          };
+          return cb(new Error(req.errorValidation.message), false);
+        }
+      }
+      cb(null, true);
+    };
+
+    const upload = multer({
+      storage,
+      fileFilter: typeFileFilters,
+      limits: {
+        fileSize: parseInt(maxSize),
+      },
+    }).fields(uploadFields);
+
+    return (req, res, next) => {
+      upload(req, res, function (err) {
+        if (req.errorValidation)
+          return res.status(400).send(req.errorValidation);
+
+        if (!err && !req.files)
           return res.status(400).send({
             error: {
               message: "Please select file to upload",

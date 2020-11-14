@@ -2,9 +2,9 @@ const { Literatures, Users } = require("../../models");
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
-// const convertapi = require("convertapi")("7ZtF3Ao7avqqbYHm");
 
-const pdfThumb = require("pdf-thumbnail");
+const convertapi = require("convertapi")("7ZtF3Ao7avqqbYHm");
+// const pdfThumb = require("pdf-thumbnail");
 
 const { Storage } = require("@google-cloud/storage");
 const { buketUri, storageConfig } = require("../../config/firebase");
@@ -128,28 +128,25 @@ exports.add = async (req, res) => {
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.file.buffer);
 
-    // const pdfThumb = await convertapi.convert("thumbnail", {
-    //   File: req.file,
-    // });
-
-    // console.log(pdfThumb);
-
-    const blob_2 = await bucket.file(
-      fileName.replace(".pdf" || ".PDF", ".jpg")
-    );
-
-    // Create writable stream and specifying file mimetype
-    const blobWriter_2 = blob.createWriteStream({
-      metadata: {
-        contentType: "image/jpg",
-        firebaseStorageDownloadTokens: null,
-      },
+    const pdfPageOne = await convertapi.convert("extract", {
+      File: req.file.buffer,
+      PageRange: 1,
     });
 
-    const pdfThumbnail = await pdfThumb(req.file.buffer, {
-      compress: {
-        type: "JPEG", //default
-        quality: 70, //default
+    const pdfThumbnail = await convertapi.convert("jpg", {
+      File: pdfPageOne,
+      ScaleImage: true,
+      ScaleProportions: true,
+      ImageWidth: 500,
+    });
+
+    const blob_2 = await bucket.file(pdfThumbnail.file().originalname);
+
+    // Create writable stream and specifying file mimetype
+    const blobWriter_2 = blob_2.createWriteStream({
+      metadata: {
+        contentType: pdfThumbnail.file().mimetype,
+        firebaseStorageDownloadTokens: null,
       },
     });
 
@@ -157,11 +154,14 @@ exports.add = async (req, res) => {
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
 
-    console.log(pdfThumbnail);
-    console.log(pdfThumbnail.read());
-
     // When there is no more data to be consumed from the stream
-    blobWriter_2.end(pdfThumbnail.read());
+    blobWriter_2.end(pdfThumbnail.file().buffer);
+
+    // const pdfThumb = await convertapi.convert("thumbnail", {
+    //   File: req.file,
+    // });
+
+    // console.log(pdfThumb);
 
     try {
       const data = await Literatures.create({

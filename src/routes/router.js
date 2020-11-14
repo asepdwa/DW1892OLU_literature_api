@@ -34,7 +34,7 @@ router.patch(
 );
 router.delete("/user/:id", [authentication.authorization], deleteUser);
 
-// >>>>>>>>>>> Literatures | Literatures <<<<<<<<<<<<<<<
+// >>>>>>>>>>> Literatures  <<<<<<<<<<<<<<<
 const {
   add: addLiterature,
   get: getLiteratureData,
@@ -68,7 +68,7 @@ router.delete(
   deleteLiterature
 );
 
-// >>>>>>>>>>> Literaturemark <<<<<<<<<<<<<<<<
+// >>>>>>>>>>> Literature Collection <<<<<<<<<<<<<<<<
 const {
   add: addCollection,
   delete: deleteCollection,
