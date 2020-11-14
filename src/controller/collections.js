@@ -22,6 +22,13 @@ exports.get = async (req, res) => {
             exclude: ["createdAt", "updatedAt"],
           },
         },
+        include: {
+          model: Users,
+          as: "uploader",
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "password"],
+          },
+        },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
