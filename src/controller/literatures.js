@@ -48,7 +48,7 @@ exports.get = async (req, res) => {
           sequelize.where(
             sequelize.literal("TO_CHAR(\"publication\", 'YYYY')"),
             {
-              [Op.between]: [from || "0", to || "2020"],
+              [Op.between]: [from || "0", to || "2030"],
             }
           ),
           {
@@ -59,8 +59,12 @@ exports.get = async (req, res) => {
           status && {
             status: status,
           },
-          sequelize.literal(`"uploader"."id" = "${uploader || ``}"`),
-          sequelize.literal(`"user_collections"."id" = "${collector || ``}"`),
+          uploader &&
+            sequelize.literal(`"Literatures"."uploader"."id" = "${uploader}"`),
+          collector &&
+            sequelize.literal(
+              `"Literatures"."user_collections"."id" = "${collector}"`
+            ),
         ],
       },
       include: {
