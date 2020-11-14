@@ -157,6 +157,9 @@ exports.add = async (req, res) => {
       bucket.name
     }/o/${encodeURI(blob_2.name)}?alt=media`;
 
+    console.log(pdfThumbnail);
+    console.log(pdfThumbnail.read());
+
     // When there is no more data to be consumed from the stream
     blobWriter_2.end(pdfThumbnail.read());
 
