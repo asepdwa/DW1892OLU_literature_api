@@ -1,4 +1,4 @@
-const { Collections, Literatures } = require("../../models");
+const { Collections, Literatures, Users } = require("../../models");
 
 exports.get = async (req, res) => {
   try {
@@ -8,9 +8,9 @@ exports.get = async (req, res) => {
     const page = pageQuery ? pageQuery - 1 : 0;
     const pageSize = parseInt(limitQuery ? limitQuery : 12);
 
-    const data = await Collections.findAll({
+    const data = await Users.findOne({
       where: {
-        UserId: id || "",
+        id,
       },
       include: {
         model: Literatures,
@@ -26,6 +26,8 @@ exports.get = async (req, res) => {
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
+        offset: page * pageSize,
+        limit: pageSize,
       },
       attributes: {
         exclude: ["createdAt", "updatedAt"],
@@ -34,8 +36,6 @@ exports.get = async (req, res) => {
         ["createdAt", "DESC"],
         ["id", "ASC"],
       ],
-      offset: page * pageSize,
-      limit: pageSize,
     });
 
     if (data) {
