@@ -88,13 +88,14 @@ exports.delete = async (req, res) => {
 
 exports.patch_avatar = async (req, res) => {
   try {
+    const id = req.user.id;
     const photoUrl = req.file.path;
 
     const patch = await Users.update(
       { photoUrl },
       {
         where: {
-          id: req.params.id,
+          id,
         },
       }
     );
