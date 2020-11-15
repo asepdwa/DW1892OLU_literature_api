@@ -86,11 +86,11 @@ exports.add = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId, literatureId } = req.query;
     const removed = await Collections.destroy({
       where: {
-        UserId: req.user.id,
-        LiteratureId: id,
+        UserId: userId,
+        LiteratureId: literatureId,
       },
     });
 

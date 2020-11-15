@@ -80,10 +80,6 @@ const {
   delete: deleteCollection,
 } = require("../controller/collections");
 router.post("/collection", [authentication.authorization], addCollection);
-router.delete(
-  "/collection/:id",
-  [authentication.authorization],
-  deleteCollection
-);
+router.delete("/collection", [authentication.authorization], deleteCollection);
 
 module.exports = router;
