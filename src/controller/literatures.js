@@ -67,7 +67,7 @@ exports.get = async (req, res) => {
           exclude: ["createdAt", "updatedAt", "password"],
         },
         where: {
-          id: uploader,
+          [Op.and]: [{ id: uploader }],
         },
       },
       attributes: {
