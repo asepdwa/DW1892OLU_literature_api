@@ -66,6 +66,9 @@ exports.get = async (req, res) => {
         attributes: {
           exclude: ["createdAt", "updatedAt", "password"],
         },
+        where: {
+          id: uploader || "",
+        },
       },
       attributes: {
         exclude: ["createdAt", "updatedAt"],
