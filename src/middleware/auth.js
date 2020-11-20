@@ -111,7 +111,7 @@ exports.authentication = {
   },
 
   files_upload: function (uploadFields) {
-    const storage = (req, file) => {
+    const storageFilters = (req, file) => {
       if (file.fieldname === "file") {
         return multer.memoryStorage();
       } else {
@@ -153,7 +153,7 @@ exports.authentication = {
     };
 
     const upload = multer({
-      storage,
+      storage: storageFilters,
       fileFilter: typeFileFilters,
       limits: {
         fileSize: parseInt(maxSize),
