@@ -111,23 +111,20 @@ exports.authentication = {
   },
 
   files_upload: function (uploadFields) {
-    const storage = function (req, file, cb) {
+    const storage = (req, file) => {
       if (file.fieldname === "file") {
-        return cb(multer.memoryStorage());
+        return multer.memoryStorage();
       } else {
-        return cb(
-          new CloudinaryStorage({
-            cloudinary: cloudinary,
-            params: (req, file) => {
-              return {
-                folder: `literature/${file.fieldname}s`,
-                resource_type: "image",
-                public_id:
-                  Date.now() + "-" + file.originalname.replace(" ", "-"),
-              };
-            },
-          })
-        );
+        return new CloudinaryStorage({
+          cloudinary: cloudinary,
+          params: (req, file) => {
+            return {
+              folder: `literature/${file.fieldname}s`,
+              resource_type: "image",
+              public_id: Date.now() + "-" + file.originalname.replace(" ", "-"),
+            };
+          },
+        });
       }
     };
 
