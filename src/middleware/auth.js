@@ -113,7 +113,21 @@ exports.authentication = {
   files_upload: function (uploadFields) {
     const storage = function (req, file, cb) {
       if (file.fieldname === "file") {
-        return multer.memoryStorage();
+        return cb(multer.memoryStorage());
+      } else {
+        return cb(
+          new CloudinaryStorage({
+            cloudinary: cloudinary,
+            params: (req, file) => {
+              return {
+                folder: `literature/${file.fieldname}s`,
+                resource_type: "image",
+                public_id:
+                  Date.now() + "-" + file.originalname.replace(" ", "-"),
+              };
+            },
+          })
+        );
       }
     };
 
