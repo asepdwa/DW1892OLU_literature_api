@@ -111,7 +111,11 @@ exports.authentication = {
   },
 
   files_upload: function (uploadFields) {
-    const storage = multer.memoryStorage();
+    const storage = function (req, file, cb) {
+      if (file.fieldname === "file") {
+        return multer.memoryStorage();
+      }
+    };
 
     const typeFileFilters = function (req, file, cb) {
       if (file.fieldname === "file") {
