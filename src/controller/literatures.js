@@ -131,8 +131,8 @@ exports.add = async (req, res) => {
 
   try {
     const fileName = Date.now() + "-" + req.files["file"][0].originalname;
-    // const thumbnailName =
-    //   Date.now() + "-" + req.files["thumbnail"][0].originalname;
+    const thumbnailName =
+      Date.now() + "-" + req.files["thumbnail"][0].originalname;
     // Create a bucket associated to Firebase storage bucket
 
     const blob = await bucket.file(fileName);
@@ -152,22 +152,22 @@ exports.add = async (req, res) => {
     // When there is no more data to be consumed from the stream
     blobWriter.end(req.files["file"][0].buffer);
 
-    // const blob_2 = await bucket.file(thumbnailName);
+    const blob_2 = await bucket.file(thumbnailName);
 
     // Create writable stream and specifying file mimetype
-    // const blobWriter_2 = blob_2.createWriteStream({
-    //   metadata: {
-    //     contentType: req.files["thumbnail"][0].mimetype,
-    //     firebaseStorageDownloadTokens: null,
-    //   },
-    // });
+    const blobWriter_2 = blob_2.createWriteStream({
+      metadata: {
+        contentType: req.files["thumbnail"][0].mimetype,
+        firebaseStorageDownloadTokens: null,
+      },
+    });
 
-    // const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
-    //   bucket.name
-    // }/o/${encodeURI(blob_2.name)}?alt=media`;
+    const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${
+      bucket.name
+    }/o/${encodeURI(blob_2.name)}?alt=media`;
 
     // When there is no more data to be consumed from the stream
-    // blobWriter_2.end(req.files["thumbnail"][0].buffer);
+    blobWriter_2.end(req.files["thumbnail"][0].buffer);
 
     // const pdfThumb = await convertapi.convert("thumbnail", {
     //   File: req.file,
@@ -179,7 +179,7 @@ exports.add = async (req, res) => {
       const data = await Literatures.create({
         ...payload,
         fileUrl,
-        thumbnailUrl: "NULL",
+        thumbnailUrl,
       });
       res.send({
         message:
