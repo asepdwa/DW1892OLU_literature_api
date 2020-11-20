@@ -48,7 +48,7 @@ router.post(
   "/literature",
   [
     authentication.authorization,
-    authentication.file_upload([
+    authentication.files_upload([
       { name: "file", maxCount: 1 },
       { name: "thumbnail", maxCount: 1 },
     ]),
