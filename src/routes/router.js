@@ -79,7 +79,7 @@ const {
   add: addCollection,
   delete: deleteCollection,
 } = require("../controller/collections");
-router.post("/collection", [authentication.authorization], addCollection);
+router.post("/collection/:id", [authentication.authorization], addCollection);
 router.delete(
   "/collection/:id",
   [authentication.authorization],

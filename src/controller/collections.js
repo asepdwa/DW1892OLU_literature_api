@@ -67,8 +67,11 @@ const { Collections, Literatures, Users } = require("../../models");
 
 exports.add = async (req, res) => {
   try {
-    let payload = req.body;
-    const data = await Collections.create(payload);
+    const { id } = req.params;
+    const data = await Collections.create({
+      UserId: req.user.id,
+      LiteratureId: id,
+    });
     res.send({
       message: "This literature has been added to your collection",
       data,
