@@ -1,6 +1,6 @@
 const { Literatures, Users } = require("../../models");
-const sequelize,
-  { Op } = require("sequelize");
+const sequelize = require("sequelize");
+const { Op } = require("sequelize");
 const Joi = require("@hapi/joi");
 
 // const convertapi = require("convertapi")("7ZtF3Ao7avqqbYHm");
